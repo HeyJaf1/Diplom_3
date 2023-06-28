@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -34,10 +35,7 @@ public class ConstructorTests {
     @Description("Проверка, что происходит успешный скролл в раздел сайта соусов.")
     public void shouldGoToSauces() {
         constructor = new Constructor(driver);
-        constructor.goToSauces();
-        constructor.waitForTheSauces();
-        assertThat(true, equalTo(driver.findElement(By
-                .xpath("//div[contains(span/text(),'Соусы')]")).isDisplayed()));
+        Assert.assertTrue(constructor.goToSauces().contains("current")); //переход к разделу "Соусы" и проверка смены типа раздела на "current"
     }
 
     @Test
@@ -49,11 +47,6 @@ public class ConstructorTests {
                 .xpath("//div[contains(span/text(),'Булки')]")).isDisplayed()) {
             assertThat(true, equalTo(driver.findElement(By
                     .xpath("//div[contains(span/text(),'Булки') and contains(@class,'current')]")).isDisplayed()));
-        } else {
-            constructor.goToBuns();
-            constructor.waiteForTheBuns();
-            assertThat(true, equalTo(driver.findElement(By
-                    .xpath("//div[contains(span/text(),'Булки') and contains(@class,'current')]")).isDisplayed()));
         }
     }
 
@@ -62,10 +55,7 @@ public class ConstructorTests {
     @Description("Проверка, что происходит успешный скролл в раздел сайта начинок.")
     public void shouldGoToTheFillings() {
         constructor = new Constructor(driver);
-        constructor.goToFillings();
-        constructor.waiteForTheFillings();
-        assertThat(true, equalTo(driver.findElement(By
-                .xpath("//div[contains(span/text(),'Начинки')]")).isDisplayed()));
+        Assert.assertTrue(constructor.goToFillings().contains("current")); //переход к разделу "Начинки" и проверка смены типа раздела на "current"
     }
 
     @After

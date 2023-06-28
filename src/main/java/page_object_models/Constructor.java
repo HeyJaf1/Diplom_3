@@ -15,12 +15,15 @@ public class Constructor {
     }
 
     private static final By buns = By.xpath("//div//main/section[1]/div[1]/div[1]/span");
-    private static final By sauces = By.xpath("//div//main/section[1]/div[1]/div[2]/span");
-    private static final By fillings = By.xpath("//div//main/section[1]/div[1]/div[3]/span");
+    private static final By fillings = By.xpath(".//span[@class = 'text text_type_main-default' and text()='Начинки']/parent::div");
+    private final By sauces = By.xpath(".//span[@class = 'text text_type_main-default' and text()='Соусы']/parent::div"); //кнопка ""Соусы"
+
 
     @Step("Проверка перехода к разделу соусы.")
-    public void goToSauces() {
+    public String goToSauces() {
         driver.findElement(sauces).click();
+        return driver.findElement(sauces).getAttribute("class");
+
     }
 
     @Step("Проверка перехода к раздулу булок.")
@@ -29,8 +32,10 @@ public class Constructor {
     }
 
     @Step("Проверка перехода к разделу начинок.")
-    public void goToFillings() {
+    public String goToFillings() {
         driver.findElement(fillings).click();
+        return driver.findElement(fillings).getAttribute("class");
+
     }
 
     @Step("Ожидание загрузки страницы: проверили видимость элемента а странице.")

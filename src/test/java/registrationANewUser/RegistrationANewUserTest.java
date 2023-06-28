@@ -27,7 +27,6 @@ public class RegistrationANewUserTest {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.get(BASE_URL);
-        //driver = WebDriverFactory.getDriver(BASE_URL);
     }
 
     @Test

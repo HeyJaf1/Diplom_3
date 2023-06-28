@@ -43,6 +43,13 @@ public class PersonalCabinet {
                 .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[text() = 'Вход']")));
     }
 
+    // Общие методы взаимодействия с локаторами.
+    @Step("Ожидание загрузки страницы: проверили видимость элемента на странице.")
+    public void isErrorWaitForEnterPage() {
+        new WebDriverWait(driver, 8)
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//p[text()='Некорректный пароль']")));
+    }
+
     @Step("Ожидание загрузки страницы: проверили видимость элемента а странице.")
     public void waitForRegistrationPage() {
         new WebDriverWait(driver, 8)

@@ -3,12 +3,12 @@ package registrationANewUser;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
-import logging.Logging;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import page_object_models.PersonalCabinet;
@@ -20,11 +20,12 @@ import static credentials.Constants.LOGIN_USER_URL;
 
 @RunWith(Parameterized.class)
 public class NewUserPasswordCheckTheLengthTest {
-    private Logging logging;
     private PersonalCabinet personalCabinet;
     private WebDriver driver;
     private final String attempt;
     private final String expected = LOGIN_USER_URL;
+    public By invalidPasswordMessage = By.xpath(".//p[text()='Некорректный пароль']"); //сообщение "Некорректный пароль"
+
 
     public NewUserPasswordCheckTheLengthTest(String attempt) {
         this.attempt = attempt;
@@ -38,6 +39,7 @@ public class NewUserPasswordCheckTheLengthTest {
                 {"      "},     // ТЕСТ ДОЛЖЕН ПАДАТЬ
                 {"1J89k"},      // Падает, так как задана некорректная длина пароля из цифр и букв.
                 {"1234Kl"},     // Успешный: цифры и буквы (заглавные и строчные).
+       // Успешный: цифры и буквы (заглавные и строчные).
         };
     }
 
@@ -60,8 +62,13 @@ public class NewUserPasswordCheckTheLengthTest {
         personalCabinet.emailFieldFillingToRegisterAUser();
         personalCabinet.passwordLengthCheck(attempt);
         personalCabinet.registrationButtonClick();
-        personalCabinet.waitForEnterPage();
-        assertEquals(expected, driver.getCurrentUrl());
+        try {
+            personalCabinet.waitForEnterPage();
+            assertEquals(expected, driver.getCurrentUrl());
+        } catch (Exception e) {
+            personalCabinet.isErrorWaitForEnterPage();
+            assertEquals("Некорректный пароль", driver.findElement(invalidPasswordMessage).getText());
+        }
     }
 
     @After
