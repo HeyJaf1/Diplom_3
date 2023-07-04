@@ -23,23 +23,20 @@ public class NewUserPasswordCheckTheLengthTest {
     private PersonalCabinet personalCabinet;
     private WebDriver driver;
     private final String attempt;
-    private final String expected = LOGIN_USER_URL;
-    public By invalidPasswordMessage = By.xpath(".//p[text()='Некорректный пароль']"); //сообщение "Некорректный пароль"
+    private String expected;
+    public By invalidPasswordMessage = By.xpath(".//p[text()='Некорректный пароль']"); // сообщение "Некорректный пароль"
 
-
-    public NewUserPasswordCheckTheLengthTest(String attempt) {
+    public NewUserPasswordCheckTheLengthTest(String attempt, String expected) {
         this.attempt = attempt;
+        this.expected = expected;
     }
 
     @Parameterized.Parameters
     public static Object[][] getData() {
         return new Object[][]{
-                {"12345"},      // Падает, так как задана некорректная длина пароля.
-                {"!@#$%^"},     // ТЕСТ ДОЛЖЕН ПАДАТЬ
-                {"      "},     // ТЕСТ ДОЛЖЕН ПАДАТЬ
-                {"1J89k"},      // Падает, так как задана некорректная длина пароля из цифр и букв.
-                {"1234Kl"},     // Успешный: цифры и буквы (заглавные и строчные).
-       // Успешный: цифры и буквы (заглавные и строчные).
+                {"1J89k", "Некорректный пароль"},
+                {"1k", "Некорректный пароль"},
+                {"1234Kl", LOGIN_USER_URL},
         };
     }
 
@@ -53,7 +50,7 @@ public class NewUserPasswordCheckTheLengthTest {
 
     @Test
     @DisplayName("Тест на проверку длины пароля.")
-    @Description("Проверка, что пароль НЕ менее 6 символов. В тестовых данных присутствют варианты с паролем менее 6 символов - эти тесты - падающие.")
+    @Description("Проверка, что пароль НЕ менее 6 символов. В тестовых данных присутствуют варианты с паролем менее 6 символов - эти тесты - падающие.")
     public void shouldCheckThePasswordLength() {
         personalCabinet = new PersonalCabinet(driver);
         personalCabinet.goToPersonalCabinetPage();
@@ -62,12 +59,13 @@ public class NewUserPasswordCheckTheLengthTest {
         personalCabinet.emailFieldFillingToRegisterAUser();
         personalCabinet.passwordLengthCheck(attempt);
         personalCabinet.registrationButtonClick();
-        try {
+
+        if (expected.equals("Некорректный пароль")) {
+            personalCabinet.isErrorWaitForEnterPage();
+            assertEquals(expected, driver.findElement(invalidPasswordMessage).getText());
+        } else {
             personalCabinet.waitForEnterPage();
             assertEquals(expected, driver.getCurrentUrl());
-        } catch (Exception e) {
-            personalCabinet.isErrorWaitForEnterPage();
-            assertEquals("Некорректный пароль", driver.findElement(invalidPasswordMessage).getText());
         }
     }
 
